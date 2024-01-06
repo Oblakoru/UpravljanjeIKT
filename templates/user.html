@@ -1,36 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Page</title>
+    <!-- Include Tailwind CSS via CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
-    <h2>Welcome, {{ username }}!</h2>
-    <p>This is the User page content.</p>
 
-    <h3>User Information Form</h3>
-    <form method="post" action="{{ url_for('user_info') }}">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required><br>
+<body class="bg-gray-100 p-8">
 
-        <label for="surname">Surname:</label>
-        <input type="text" id="surname" name="surname" required><br>
+    <h2 class="text-2xl font-bold mb-4">Welcome, {{ username }}!</h2>
+    <p class="mb-6">This is the User page content.</p>
 
-        <label for="street">Street:</label>
-        <input type="text" id="street" name="street" required><br>
+    <h3 class="text-xl font-bold mb-2">User Information Form</h3>
+    <form method="post" action="{{ url_for('user_info') }}" class="mb-8">
+        <!-- Add Tailwind CSS classes to style the form elements -->
+        <div class="mb-4">
+            <label for="name" class="block text-sm font-medium text-gray-600">Name:</label>
+            <input type="text" id="name" name="name" required
+                class="mt-1 p-2 w-full border rounded-md">
+        </div>
 
-        <label for="country">Country:</label>
-        <input type="text" id="country" name="country" required><br>
+        <div class="mb-4">
+            <label for="surname" class="block text-sm font-medium text-gray-600">Surname:</label>
+            <input type="text" id="surname" name="surname" required
+                class="mt-1 p-2 w-full border rounded-md">
+        </div>
 
-        <button type="submit">Submit</button>
+        <div class="mb-4">
+            <label for="street" class="block text-sm font-medium text-gray-600">Street:</label>
+            <input type="text" id="street" name="street" required
+                class="mt-1 p-2 w-full border rounded-md">
+        </div>
+
+        <div class="mb-4">
+            <label for="country" class="block text-sm font-medium text-gray-600">Country:</label>
+            <input type="text" id="country" name="country" required
+                class="mt-1 p-2 w-full border rounded-md">
+        </div>
+
+        <button type="submit"
+            class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring focus:border-blue-300">Submit</button>
     </form>
 
-    <a href="{{ url_for('logout') }}">Logout</a>
+    <a href="{{ url_for('logout') }}" class="text-blue-500 hover:underline">Logout</a>
 
-    <h3>Check Form Status</h3>
+    <h3 class="text-xl font-bold my-4">Check Form Status</h3>
     <form method="get" action="{{ url_for('check_status') }}">
-        <button type="submit">Check Status</button>
+        <button type="submit"
+            class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-700 focus:outline-none focus:ring focus:border-green-300">Check
+            Status</button>
     </form>
 </body>
+
 </html>

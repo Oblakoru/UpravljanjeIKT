@@ -36,17 +36,6 @@ def create_table():
         )
     ''')
 
-    # cursor.execute('''
-    #     CREATE TABLE IF NOT EXISTS forms (
-    #         id INTEGER PRIMARY KEY AUTOINCREMENT,
-    #         username TEXT,
-    #         name TEXT,
-    #         surname TEXT,
-    #         street TEXT,
-    #         country TEXT,
-    #         status TEXT DEFAULT 'pending'
-    #     )
-    # ''')
     conn.commit()
     conn.close()
 def create_database():
@@ -60,7 +49,8 @@ create_database()
 
 # Static user accounts
 static_accounts = [
-    {'username': 'user', 'password': 'user', 'role': 'user'},
+    {'username': 'alen', 'password': 'alen', 'role': 'user'},
+    {'username': 'beni', 'password': 'beni', 'role': 'user'},
     {'username': 'admin', 'password': 'admin', 'role': 'admin'}
 ]
 
@@ -188,17 +178,33 @@ def view_pdf(username):
         return "PDF not found"
 
 
-@app.route('/update_status/<int:form_id>/<string:new_status>', methods=['POST'])
-def update_status(form_id, new_status):
+# @app.route('/update_status/<int:form_id>/<string:new_status>', methods=['POST'])
+# def update_status(form_id, new_status):
+#     if 'username' in session and session['role'] == 'admin':
+#         conn = sqlite3.connect(DATABASE)
+#         cursor = conn.cursor()
+#         cursor.execute('UPDATE forms SET status = ? WHERE id = ?', (new_status, form_id))
+#         conn.commit()
+#         conn.close()
+#         return redirect(url_for('admin'))
+#     else:
+#         return redirect(url_for('login'))
+
+@app.route('/update_status/<string:username>/<string:new_status>', methods=['POST'])
+def update_status(username, new_status):
     if 'username' in session and session['role'] == 'admin':
         conn = sqlite3.connect(DATABASE)
         cursor = conn.cursor()
-        cursor.execute('UPDATE forms SET status = ? WHERE id = ?', (new_status, form_id))
+
+        # Update the status based on the username
+        cursor.execute('UPDATE forms SET status = ? WHERE username = ?', (new_status, username))
         conn.commit()
         conn.close()
+
         return redirect(url_for('admin'))
     else:
-        return redirect(url_for('login'))
+        return redirect(url_for('login'))# Forbidden, as the user is not an admin
+
 
 @app.route('/upload_pdf', methods=['POST'])
 def upload_pdf():

@@ -1,49 +1,30 @@
-{#<!DOCTYPE html>#}
-{#<html lang="en">#}
-{#<head>#}
-{#    <meta charset="UTF-8">#}
-{#    <meta name="viewport" content="width=device-width, initial-scale=1.0">#}
-{#    <title>User Status</title>#}
-{#</head>#}
-{#<body>#}
-{#    <h2>Welcome, {{ username }}!</h2>#}
-{#    <p>Your form status is: {{ status }}</p>#}
-{##}
-{#    <h3>Upload New PDF</h3>#}
-{#    <form method="post" action="{{ url_for('upload_pdf') }}" enctype="multipart/form-data">#}
-{#        <label for="new_pdf">Select PDF:</label>#}
-{#        <input type="file" id="new_pdf" name="new_pdf" accept=".pdf">#}
-{#        <button type="submit">Upload</button>#}
-{#    </form>#}
-{##}
-{#    {% if existing_pdf %}#}
-{#        <h3>Existing PDF</h3>#}
-{#        <a href="{{ url_for('view_pdf', pdf_id=pdf_id) }}" target="_blank">View PDF</a>#}
-{#    {% endif %}#}
-{##}
-{#    <a href="{{ url_for('logout') }}">Logout</a>#}
-{#</body>#}
-{#</html>#}
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Status</title>
+    <!-- Include Tailwind CSS via CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body>
-    <h2>Welcome, {{ username }}!</h2>
-    <p>Your form status is: {{ status }}</p>
 
-    <h3>Upload New PDF</h3>
-    <form method="post" action="{{ url_for('upload_pdf') }}" enctype="multipart/form-data">
-        <label for="new_pdf">Select PDF:</label>
-        <input type="file" id="new_pdf" name="new_pdf" accept=".pdf">
-        <button type="submit">Upload</button>
+<body class="bg-gray-100 p-8">
+
+    <h2 class="text-2xl font-bold mb-4">Welcome, {{ username }}!</h2>
+    <p class="mb-4">Your form status is: {{ status }}</p>
+
+    <h3 class="text-xl font-bold mb-2">Upload New PDF</h3>
+    <form method="post" action="{{ url_for('upload_pdf') }}" enctype="multipart/form-data" class="mb-8">
+        <label for="new_pdf" class="block text-sm font-medium text-gray-600">Select PDF:</label>
+        <input type="file" id="new_pdf" name="new_pdf" accept=".pdf"
+            class="mt-1 p-2 w-full border rounded-md">
+
+        <button type="submit"
+            class="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring focus:border-blue-300">Upload</button>
     </form>
 
-    <a href="{{ url_for('logout') }}">Logout</a>
+    <a href="{{ url_for('logout') }}" class="text-blue-500 hover:underline">Logout</a>
 </body>
-</html>
 
+</html>

@@ -4,67 +4,73 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Page</title>
+    <!-- Add Tailwind CSS stylesheet link here -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
 </head>
-<body>
-    <h2>Welcome, {{ username }}!</h2>
-    <p>This is the Admin page content.</p>
+<body class="bg-gray-100 font-sans">
 
-    <h3>Submitted Forms</h3>
+    <div class="container mx-auto my-8 p-8 bg-white shadow-md">
+        <h2 class="text-2xl font-bold mb-4">Welcome, {{ username }}!</h2>
+        <p class="mb-4">This is the Admin page content.</p>
 
-    {% if forms %}
-        <table border="1">
-            <tr>
-                <th>ID</th>
-                <th>Username</th>
-                <th>Name</th>
-                <th>Surname</th>
-                <th>Street</th>
-                <th>Country</th>
-                <th>Status</th>
-                <th>Actions</th>
-                <th>PDF</th>
-            </tr>
-            {% for form in forms %}
-                <tr>
-                    <td>{{ form[0] }}</td>
-                    <td>{{ form[1] }}</td>
-                    <td>{{ form[2] }}</td>
-                    <td>{{ form[3] }}</td>
-                    <td>{{ form[4] }}</td>
-                    <td>{{ form[5] }}</td>
-                    <td>{{ form[6] }}</td>
-                    <td>
-                        <form method="post" action="{{ url_for('update_status', form_id=form[0], new_status='accepted') }}">
-                            <button type="submit">Accept</button>
-                        </form>
-                        <form method="post" action="{{ url_for('update_status', form_id=form[0], new_status='rejected') }}">
-                            <button type="submit">Reject</button>
-                        </form>
-                    </td>
-                    <td>
-                        {% if form[6] == 'accepted' %}
-                            <!-- Check if the status is 'accepted' before showing the button -->
-                            {% if form[7] %}
-                                <!-- Check if the PDF exists -->
-                                <form method="get" action="{{ url_for('view_pdf', username=form[1]) }}" target="_blank">
-                                    <button type="submit">View PDF</button>
+        <h3 class="text-xl font-semibold mb-4">Submitted Forms</h3>
+
+        {% if forms %}
+            <table class="w-full border-collapse border" border="1">
+                <thead>
+                    <tr>
+                        <th class="py-2 px-4 border">ID</th>
+                        <th class="py-2 px-4 border">Username</th>
+                        <th class="py-2 px-4 border">Name</th>
+                        <th class="py-2 px-4 border">Surname</th>
+                        <th class="py-2 px-4 border">Street</th>
+                        <th class="py-2 px-4 border">Country</th>
+                        <th class="py-2 px-4 border">Status</th>
+                        <th class="py-2 px-4 border">Actions</th>
+                        <th class="py-2 px-4 border">PDF</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for form in forms %}
+                        <tr>
+                            <td class="py-2 px-4 border">{{ form[0] }}</td>
+                            <td class="py-2 px-4 border">{{ form[1] }}</td>
+                            <td class="py-2 px-4 border">{{ form[2] }}</td>
+                            <td class="py-2 px-4 border">{{ form[3] }}</td>
+                            <td class="py-2 px-4 border">{{ form[4] }}</td>
+                            <td class="py-2 px-4 border">{{ form[5] }}</td>
+                            <td class="py-2 px-4 border">{{ form[6] }}</td>
+                            <td class="py-2 px-4 border">
+                                <form method="post" action="{{ url_for('update_status', username=form[1], new_status='accepted') }}">
+                                    <button class="bg-green-500 text-white px-2 py-1 rounded" type="submit">Accept</button>
                                 </form>
-                            {% else %}
-                                <!-- Display a message if the PDF does not exist -->
-                                No PDF available
-                            {% endif %}
-                        {% else %}
-                            <!-- If the status is not 'accepted', display a message or an empty cell -->
-                            No PDF available
-                        {% endif %}
-                    </td>
-                </tr>
-            {% endfor %}
-        </table>
-    {% else %}
-        <p>No forms available.</p>
-    {% endif %}
-
-    <a href="{{ url_for('logout') }}">Logout</a>
+                                <form method="post" action="{{ url_for('update_status', username=form[1], new_status='rejected') }}">
+                                    <button class="bg-red-500 text-white px-2 py-1 rounded" type="submit">Reject</button>
+                                </form>
+                            </td>
+                            <td class="py-2 px-4 border">
+                                {% if form[6] == 'accepted' %}
+                                    {% if form[7] %}
+                                        <form method="get" action="{{ url_for('view_pdf', username=form[1]) }}" target="_blank">
+                                            <button class="bg-blue-500 text-white px-2 py-1 rounded" type="submit">View PDF</button>
+                                        </form>
+                                    {% else %}
+                                        <span class="text-gray-500">No PDF available</span>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="text-gray-500">No PDF available</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No forms available.</p>
+        {% endif %}
+        <div class="mt-4">
+            <a class="text-blue-500" href="{{ url_for('logout') }}">Logout</a>
+        </div>
+    </div>
 </body>
 </html>

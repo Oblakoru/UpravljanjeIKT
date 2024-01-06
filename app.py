@@ -3,7 +3,6 @@ import sqlite3
 import os
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'  # Change this to a secure secret key
 
 # SQLite Database Configuration
 DATABASE = 'users.db'
@@ -80,6 +79,12 @@ def admin():
         return render_template('admin.html', username=session['username'])
     else:
         return redirect(url_for('login'))
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('login'))
+
 
 if __name__ == '__main__':
     app.run(debug=True)

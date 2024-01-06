@@ -6,8 +6,47 @@
     <title>Admin Page</title>
 </head>
 <body>
-    <h2>Welcome, Admin!</h2>
+    <h2>Welcome, {{ username }}!</h2>
     <p>This is the Admin page content.</p>
+
+    <h3>Submitted Forms</h3>
+
+    {% if forms %}
+        <table border="1">
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Name</th>
+                <th>Surname</th>
+                <th>Street</th>
+                <th>Country</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+            {% for form in forms %}
+                <tr>
+                    <td>{{ form[0] }}</td>
+                    <td>{{ form[1] }}</td>
+                    <td>{{ form[2] }}</td>
+                    <td>{{ form[3] }}</td>
+                    <td>{{ form[4] }}</td>
+                    <td>{{ form[5] }}</td>
+                    <td>{{ form[6] }}</td>
+                    <td>
+                        <form method="post" action="{{ url_for('update_status', form_id=form[0], new_status='accepted') }}">
+                            <button type="submit">Accept</button>
+                        </form>
+                        <form method="post" action="{{ url_for('update_status', form_id=form[0], new_status='rejected') }}">
+                            <button type="submit">Reject</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>No forms available.</p>
+    {% endif %}
+
     <a href="{{ url_for('logout') }}">Logout</a>
 </body>
 </html>

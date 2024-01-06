@@ -6,8 +6,31 @@
     <title>User Page</title>
 </head>
 <body>
-    <h2>Welcome, User!</h2>
+    <h2>Welcome, {{ username }}!</h2>
     <p>This is the User page content.</p>
+
+    <h3>User Information Form</h3>
+    <form method="post" action="{{ url_for('user_info') }}">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required><br>
+
+        <label for="surname">Surname:</label>
+        <input type="text" id="surname" name="surname" required><br>
+
+        <label for="street">Street:</label>
+        <input type="text" id="street" name="street" required><br>
+
+        <label for="country">Country:</label>
+        <input type="text" id="country" name="country" required><br>
+
+        <button type="submit">Submit</button>
+    </form>
+
     <a href="{{ url_for('logout') }}">Logout</a>
+
+    <h3>Check Form Status</h3>
+    <form method="get" action="{{ url_for('check_status') }}">
+        <button type="submit">Check Status</button>
+    </form>
 </body>
 </html>

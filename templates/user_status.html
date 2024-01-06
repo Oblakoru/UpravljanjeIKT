@@ -1,3 +1,30 @@
+{#<!DOCTYPE html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#    <meta charset="UTF-8">#}
+{#    <meta name="viewport" content="width=device-width, initial-scale=1.0">#}
+{#    <title>User Status</title>#}
+{#</head>#}
+{#<body>#}
+{#    <h2>Welcome, {{ username }}!</h2>#}
+{#    <p>Your form status is: {{ status }}</p>#}
+{##}
+{#    <h3>Upload New PDF</h3>#}
+{#    <form method="post" action="{{ url_for('upload_pdf') }}" enctype="multipart/form-data">#}
+{#        <label for="new_pdf">Select PDF:</label>#}
+{#        <input type="file" id="new_pdf" name="new_pdf" accept=".pdf">#}
+{#        <button type="submit">Upload</button>#}
+{#    </form>#}
+{##}
+{#    {% if existing_pdf %}#}
+{#        <h3>Existing PDF</h3>#}
+{#        <a href="{{ url_for('view_pdf', pdf_id=pdf_id) }}" target="_blank">View PDF</a>#}
+{#    {% endif %}#}
+{##}
+{#    <a href="{{ url_for('logout') }}">Logout</a>#}
+{#</body>#}
+{#</html>#}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,6 +36,14 @@
     <h2>Welcome, {{ username }}!</h2>
     <p>Your form status is: {{ status }}</p>
 
+    <h3>Upload New PDF</h3>
+    <form method="post" action="{{ url_for('upload_pdf') }}" enctype="multipart/form-data">
+        <label for="new_pdf">Select PDF:</label>
+        <input type="file" id="new_pdf" name="new_pdf" accept=".pdf">
+        <button type="submit">Upload</button>
+    </form>
+
     <a href="{{ url_for('logout') }}">Logout</a>
 </body>
 </html>
+

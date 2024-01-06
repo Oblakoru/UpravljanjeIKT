@@ -1,6 +1,9 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+import base64
+
+from flask import Flask, render_template, request, redirect, url_for, session, Response
 import sqlite3
 import os
+
 
 app = Flask(__name__)
 app.secret_key = 'secret'
@@ -23,14 +26,27 @@ def create_table():
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS forms (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT,
-            name TEXT,
-            surname TEXT,
-            street TEXT,
-            country TEXT,
-            status TEXT DEFAULT 'pending'
+            username TEXT NOT NULL,
+            name TEXT NOT NULL,
+            surname TEXT NOT NULL,
+            street TEXT NOT NULL,
+            country TEXT NOT NULL,
+            status TEXT DEFAULT 'pending',
+            pdf TEXT
         )
     ''')
+
+    # cursor.execute('''
+    #     CREATE TABLE IF NOT EXISTS forms (
+    #         id INTEGER PRIMARY KEY AUTOINCREMENT,
+    #         username TEXT,
+    #         name TEXT,
+    #         surname TEXT,
+    #         street TEXT,
+    #         country TEXT,
+    #         status TEXT DEFAULT 'pending'
+    #     )
+    # ''')
     conn.commit()
     conn.close()
 def create_database():
@@ -151,6 +167,27 @@ def admin():
     else:
         return redirect(url_for('login'))
 
+
+@app.route('/view_pdf/<string:username>')
+def view_pdf(username):
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    cursor.execute('SELECT pdf FROM forms WHERE username = ? AND status = "accepted"', (username,))
+    pdf_data = cursor.fetchone()
+    conn.close()
+
+    if pdf_data:
+        # Convert base64 encoding to binary data
+        pdf_binary = base64.b64decode(pdf_data[0])
+
+        # Set the appropriate response headers for downloading
+        response = Response(pdf_binary, content_type='application/pdf')
+        response.headers["Content-Disposition"] = f"attachment; filename={username}_form.pdf"
+        return response
+    else:
+        return "PDF not found"
+
+
 @app.route('/update_status/<int:form_id>/<string:new_status>', methods=['POST'])
 def update_status(form_id, new_status):
     if 'username' in session and session['role'] == 'admin':
@@ -163,6 +200,29 @@ def update_status(form_id, new_status):
     else:
         return redirect(url_for('login'))
 
+@app.route('/upload_pdf', methods=['POST'])
+def upload_pdf():
+    if 'username' in session and session['role'] == 'user':
+        try:
+            new_pdf = request.files['new_pdf']
+            new_pdf_data = new_pdf.read()
+
+            # Convert binary data to base64 encoding
+            new_pdf_base64 = base64.b64encode(new_pdf_data).decode('utf-8')
+
+            # Update the existing form's PDF in the database
+            conn = sqlite3.connect(DATABASE)
+            cursor = conn.cursor()
+            cursor.execute('UPDATE forms SET pdf = ? WHERE username = ?', (new_pdf_base64, session['username']))
+            conn.commit()
+            conn.close()
+
+            # Redirect to 'user' page after finishing
+            return redirect(url_for('user'))
+        except Exception as e:
+            return f"Error handling PDF: {str(e)}"
+    else:
+        return redirect(url_for('login'))
 
 @app.route('/logout')
 def logout():

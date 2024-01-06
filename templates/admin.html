@@ -22,6 +22,7 @@
                 <th>Country</th>
                 <th>Status</th>
                 <th>Actions</th>
+                <th>PDF</th>
             </tr>
             {% for form in forms %}
                 <tr>
@@ -39,6 +40,23 @@
                         <form method="post" action="{{ url_for('update_status', form_id=form[0], new_status='rejected') }}">
                             <button type="submit">Reject</button>
                         </form>
+                    </td>
+                    <td>
+                        {% if form[6] == 'accepted' %}
+                            <!-- Check if the status is 'accepted' before showing the button -->
+                            {% if form[7] %}
+                                <!-- Check if the PDF exists -->
+                                <form method="get" action="{{ url_for('view_pdf', username=form[1]) }}" target="_blank">
+                                    <button type="submit">View PDF</button>
+                                </form>
+                            {% else %}
+                                <!-- Display a message if the PDF does not exist -->
+                                No PDF available
+                            {% endif %}
+                        {% else %}
+                            <!-- If the status is not 'accepted', display a message or an empty cell -->
+                            No PDF available
+                        {% endif %}
                     </td>
                 </tr>
             {% endfor %}

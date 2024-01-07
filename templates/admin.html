@@ -28,6 +28,7 @@
                         <th class="py-2 px-4 border">Status</th>
                         <th class="py-2 px-4 border">Actions</th>
                         <th class="py-2 px-4 border">PDF</th>
+                        <th class="py-2 px-4 border">Upload PDF</th> <!-- New column -->
                     </tr>
                 </thead>
                 <tbody>
@@ -60,6 +61,12 @@
                                 {% else %}
                                     <span class="text-gray-500">No PDF available</span>
                                 {% endif %}
+                            </td>
+                            <td class="py-2 px-4 border">
+                                <form method="post" action="{{ url_for('upload_pdf_admin', username=form[1]) }}" enctype="multipart/form-data">
+                                    <input class="bg-blue-500 text-white px-2 py-1 rounded" type="file" name="new_pdf" accept=".pdf">
+                                    <button class="bg-blue-500 text-white px-2 py-1 rounded" type="submit">Upload PDF</button>
+                                </form>
                             </td>
                         </tr>
                     {% endfor %}

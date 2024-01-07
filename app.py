@@ -8,7 +8,6 @@ import os
 app = Flask(__name__)
 app.secret_key = 'secret'
 
-# SQLite Database Configuration
 DATABASE = 'users.db'
 
 def create_table():
@@ -33,7 +32,7 @@ def create_table():
             country TEXT NOT NULL,
             status TEXT DEFAULT 'pending',
             pdf TEXT,
-            potrdilo TEXT DEFAULT 'to je potrdilo'
+            potrdilo TEXT
         )
     ''')
 
@@ -44,7 +43,6 @@ def create_database():
         conn = sqlite3.connect(DATABASE)
         conn.close()
         create_table()
-
 
 create_database()
 
@@ -244,11 +242,11 @@ def download_potrdilo():
             conn.close()
 
             if potrdilo_data and potrdilo_data[0] is not None:
-                # Convert binary data to base64 encoding
-                potrdilo_base64 = potrdilo_data[0]
+                # Convert base64 encoding to binary data
+                potrdilo_binary = base64.b64decode(potrdilo_data[0])
 
                 # Set the appropriate response headers for downloading
-                response = Response(potrdilo_base64, content_type='application/pdf')
+                response = Response(potrdilo_binary, content_type='application/pdf')
                 response.headers["Content-Disposition"] = f"attachment; filename={session['username']}_potrdilo.pdf"
                 return response
             else:
@@ -258,7 +256,28 @@ def download_potrdilo():
     else:
         return "Unauthorized access."
 
+@app.route('/upload_pdf_admin/<string:username>', methods=['POST'])
+def upload_pdf_admin(username):
+    if 'username' in session and session['role'] == 'admin':
+        try:
+            new_pdf = request.files['new_pdf']
+            new_pdf_data = new_pdf.read()
 
+            # Convert binary data to base64 encoding
+            new_pdf_base64 = base64.b64encode(new_pdf_data).decode('utf-8')
+
+            # Update the existing form's PDF in the database
+            conn = sqlite3.connect(DATABASE)
+            cursor = conn.cursor()
+            cursor.execute('UPDATE forms SET potrdilo = ? WHERE username = ?', (new_pdf_base64, username))
+            conn.commit()
+            conn.close()
+
+            return redirect(url_for('admin'))
+        except Exception as e:
+            return f"Error handling PDF: {str(e)}"
+    else:
+        return redirect(url_for('login'))
 
 
 @app.route('/logout')

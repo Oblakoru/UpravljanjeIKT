@@ -44,7 +44,7 @@ def create_database():
         conn.close()
         create_table()
 
-# Create the database and tables when the app starts
+
 create_database()
 
 # Static user accounts

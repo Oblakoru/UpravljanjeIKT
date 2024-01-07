@@ -33,7 +33,7 @@ def create_table():
             country TEXT NOT NULL,
             status TEXT DEFAULT 'pending',
             pdf TEXT,
-            potrdilo TEXT,
+            potrdilo TEXT DEFAULT 'to je potrdilo'
         )
     ''')
 
@@ -97,12 +97,12 @@ def check_status():
     if 'username' in session and session['role'] == 'user':
         conn = sqlite3.connect(DATABASE)
         cursor = conn.cursor()
-        cursor.execute('SELECT status FROM forms WHERE username = ? ORDER BY id DESC LIMIT 1', (session['username'],))
-        status = cursor.fetchone()
+        cursor.execute('SELECT status, potrdilo FROM forms WHERE username = ? ORDER BY id DESC LIMIT 1', (session['username'],))
+        data = cursor.fetchone()
         conn.close()
 
-        if status and status[0] != 'pending':
-            return render_template('user_status.html', username=session['username'], status=status[0])
+        if data and data[0] != 'pending':
+            return render_template('user_status.html', username=session['username'], status=data[0], potrdilo=data[1])
         else:
             return "Form status is still pending. Check again later."
     else:

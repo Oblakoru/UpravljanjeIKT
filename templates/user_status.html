@@ -11,28 +11,34 @@
 
 <body class="bg-gray-100 p-8">
 
-<h2 class="text-2xl font-bold mb-4">Welcome, {{ username }}!</h2>
-<p class="mb-4">Your form status is: {{ status }}</p>
+<h2 class="text-2xl font-bold mb-4">Dobrodošli, {{ username }}!</h2>
+<p class="mb-4">Status vloge: {{ status }}</p>
 
-{% if status == 'accepted' %}
-    <a href="{{ url_for('download_potrdilo') }}" class="text-blue-500 hover:underline">Download Certificate</a>
-{% elif status == 'rejected' %}
-    <h3 class="text-xl font-bold mb-2">Upload New PDF</h3>
-    <form method="post" action="{{ url_for('upload_pdf') }}" enctype="multipart/form-data" class="mb-8">
-        <label for="new_pdf" class="block text-sm font-medium text-gray-600">Select PDF:</label>
-        <input type="file" id="new_pdf" name="new_pdf" accept=".pdf"
-               class="mt-1 p-2 w-full border rounded-md">
 
-        <button type="submit"
-                class="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring focus:border-blue-300">
-            Upload
-        </button>
-    </form>
+{% if potrdilo %}
+    <a href="{{ url_for('download_potrdilo') }}" class="text-blue-500 hover:underline">Prenesite digitalno potrdilo</a>
 {% else %}
-<h3 class="text-xl font-bold mb-2">Error</h3>
+    {% if status == 'accepted' %}
+        <h3 class="text-xl font-bold mb-2">Naložite osebni dokument</h3>
+        <form method="post" action="{{ url_for('upload_pdf') }}" enctype="multipart/form-data" class="mb-8">
+            <label for="new_pdf" class="block text-sm font-medium text-gray-600">Izberite:</label>
+            <input type="file" id="new_pdf" name="new_pdf" accept=".pdf"
+                   class="mt-1 p-2 w-full border rounded-md">
+
+            <button type="submit"
+                    class="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring focus:border-blue-300">
+                Naloži
+            </button>
+        </form>
+    {% elif status == 'rejected' %}
+        <h3 class="text-xl font-bold mb-2">Vaša vloga je bila zavrjena!</h3>
+    {% else %}
+        <h3 class="text-xl font-bold mb-2">Napaka :/</h3>
+    {% endif %}
 {% endif %}
 
-<a href="{{ url_for('logout') }}" class="text-blue-500 hover:underline">Logout</a>
+
+<a href="{{ url_for('logout') }}" class="text-blue-500 hover:underline">Odjava</a>
 </body>
 
 </html>

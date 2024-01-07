@@ -32,7 +32,8 @@ def create_table():
             street TEXT NOT NULL,
             country TEXT NOT NULL,
             status TEXT DEFAULT 'pending',
-            pdf TEXT
+            pdf TEXT,
+            potrdilo TEXT,
         )
     ''')
 
@@ -229,6 +230,36 @@ def upload_pdf():
             return f"Error handling PDF: {str(e)}"
     else:
         return redirect(url_for('login'))
+
+
+@app.route('/download_potrdilo', methods=['GET'])
+def download_potrdilo():
+    if 'username' in session and session['role'] == 'user':
+        try:
+            # Get the user's form data from the database
+            conn = sqlite3.connect(DATABASE)
+            cursor = conn.cursor()
+            cursor.execute('SELECT potrdilo FROM forms WHERE username = ?', (session['username'],))
+            potrdilo_data = cursor.fetchone()
+            conn.close()
+
+            if potrdilo_data and potrdilo_data[0] is not None:
+                # Convert binary data to base64 encoding
+                potrdilo_base64 = potrdilo_data[0]
+
+                # Set the appropriate response headers for downloading
+                response = Response(potrdilo_base64, content_type='application/pdf')
+                response.headers["Content-Disposition"] = f"attachment; filename={session['username']}_potrdilo.pdf"
+                return response
+            else:
+                return "Potrdilo not found for the user or is empty."
+        except Exception as e:
+            return f"Error handling Potrdilo: {str(e)}"
+    else:
+        return "Unauthorized access."
+
+
+
 
 @app.route('/logout')
 def logout():

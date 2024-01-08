@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Submission Successful</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 h-screen flex items-center justify-center">
+    <div class="bg-white p-8 shadow-md rounded-md max-w-md w-full">
+        <h2 class="text-2xl font-bold mb-4">Stanje vloge</h2>
+        <p class="mb-4">Hvala {{ username }}! Vloga je bila uspešmo oddana</p>
+        <ul class="list-disc ml-6">
+            <li><strong>Username:</strong> {{ username }}</li>
+            <li><strong>Name:</strong> {{ name }}</li>
+            <li><strong>Surname:</strong> {{ surname }}</li>
+            <li><strong>Street:</strong> {{ street }}</li>
+            <li><strong>Country:</strong> {{ country }}</li>
+        </ul>
+    </div>
+</body>
+</html>

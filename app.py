@@ -38,13 +38,28 @@ def create_table():
 
     conn.commit()
     conn.close()
+
 def create_database():
     if not os.path.exists(DATABASE):
         conn = sqlite3.connect(DATABASE)
         conn.close()
         create_table()
 
-create_database()
+def insert_static_accounts():
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+
+    for account in static_accounts:
+        # Check if the user already exists
+        cursor.execute('SELECT id FROM users WHERE username = ?', (account['username'],))
+        existing_user = cursor.fetchone()
+
+        if not existing_user:
+            # Insert the user if it doesn't exist
+            cursor.execute('INSERT INTO users (username, password, role) VALUES (?, ?, ?)', (account['username'], account['password'], account['role']))
+            conn.commit()
+
+    conn.close()
 
 # Static user accounts
 static_accounts = [
@@ -53,13 +68,8 @@ static_accounts = [
     {'username': 'admin', 'password': 'admin', 'role': 'admin'}
 ]
 
-# Insert static accounts into the database
-for account in static_accounts:
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
-    cursor.execute('INSERT INTO users (username, password, role) VALUES (?, ?, ?)', (account['username'], account['password'], account['role']))
-    conn.commit()
-    conn.close()
+create_database()
+insert_static_accounts()
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -102,7 +112,9 @@ def check_status():
         if data and data[0] != 'pending':
             return render_template('user_status.html', username=session['username'], status=data[0], potrdilo=data[1])
         else:
-            return "Form status is still pending. Check again later."
+            return render_template('error_template.html',
+                                   error_message="Vaša vloga je še v obdelavi, prosim počakajte!")
+            # return "Form status is still pending. Check again later."
     else:
         return redirect(url_for('login'))
 
@@ -117,7 +129,8 @@ def user_info():
         conn.close()
 
         if existing_pending_form:
-            return "You already have a pending form. Please wait for it to be processed."
+            return render_template('error_template.html', error_message="Vaša vloga še ni obdelana, prosim počakajte!")
+            # return "You already have a pending form. Please wait for it to be processed."
         else:
             if request.method == 'POST':
                 name = request.form['name']
@@ -135,8 +148,11 @@ def user_info():
                 conn.commit()
                 conn.close()
 
-                return f'Thank you, {session["username"]}! Form submitted successfully.<br>' \
-                       f'Username: {session["username"]}<br>Name: {name}<br>Surname: {surname}<br>Street: {street}<br>Country: {country}'
+                return render_template('success_template.html', username=session['username'], name=name,
+                                       surname=surname, street=street, country=country)
+                #
+                # return f'Thank you, {session["username"]}! Form submitted successfully.<br>' \
+                #        f'Username: {session["username"]}<br>Name: {name}<br>Surname: {surname}<br>Street: {street}<br>Country: {country}'
             else:
                 return redirect(url_for('user'))
     else:

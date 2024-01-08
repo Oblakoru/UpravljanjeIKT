@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Page</title>
-    <!-- Add Tailwind CSS stylesheet link here -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
 </head>
 <body class="bg-gray-100 font-sans">
@@ -27,7 +26,7 @@
                 <th class="py-2 px-4 border">Status</th>
                 <th class="py-2 px-4 border">Actions</th>
                 <th class="py-2 px-4 border">PDF</th>
-                <th class="py-2 px-4 border">Naloži potrdilo</th> <!-- New column -->
+                <th class="py-2 px-4 border">Naloži potrdilo</th>
             </tr>
             </thead>
             <tbody>
@@ -65,22 +64,26 @@
                             <span class="text-gray-500">PDF je na voljo</span>
                         {% endif %}
                     </td>
+
                     <td class="py-2 px-4 border">
-                        {#                        <form method="post" action="{{ url_for('upload_pdf_admin', username=form[1]) }}"#}
-                        {#                              enctype="multipart/form-data">#}
-                        {#                            <input class="bg-blue-500 text-white px-2 py-1 rounded w-48" type="file" name="new_pdf"#}
-                        {#                                   accept=".pdf">#}
-                        {#                            <button class="bg-blue-500 text-white px-2 py-1 rounded" type="submit">Naloži</button>#}
-                        {#                        </form>#}
-                        <form method="post" class="flex flex-col gap-3" action="{{ url_for('upload_pdf_admin', username=form[1]) }}"
-                              enctype="multipart/form-data">
-                            <label for="file-input" class="bg-blue-500 text-white px-2 py-1 rounded cursor-pointer">
-                                Izberi datoteko
-                            </label>
-                            <input id="file-input" class="hidden" type="file" name="new_pdf" accept=".pdf">
-                            <button class="bg-blue-500 text-white px-2 py-1 rounded" type="submit">Naloži</button>
-                        </form>
+                        {% if form[8] %}
+                            <a href="{{ url_for('download_pdf_admin', username=form[1]) }}"
+                               class="bg-green-500 text-white px-2 py-1 rounded">
+                                Download
+                            </a>
+                        {% else %}
+                            <form method="post" class="flex flex-col gap-3"
+                                  action="{{ url_for('upload_pdf_admin', username=form[1]) }}"
+                                  enctype="multipart/form-data">
+                                <label for="file-input" class="bg-blue-500 text-white px-2 py-1 rounded cursor-pointer">
+                                    Izberi datoteko
+                                </label>
+                                <input id="file-input" class="hidden" type="file" name="new_pdf" accept=".pdf">
+                                <button class="bg-blue-500 text-white px-2 py-1 rounded" type="submit">Naloži</button>
+                            </form>
+                        {% endif %}
                     </td>
+
                 </tr>
             {% endfor %}
             </tbody>

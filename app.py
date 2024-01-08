@@ -280,6 +280,32 @@ def upload_pdf_admin(username):
         return redirect(url_for('login'))
 
 
+@app.route('/download_pdf_admin/<string:username>', methods=['GET'])
+def download_pdf_admin(username):
+    if 'username' in session and session['role'] == 'admin':
+        try:
+
+            # Get the user's form data from the database
+            conn = sqlite3.connect(DATABASE)
+            cursor = conn.cursor()
+            cursor.execute('SELECT potrdilo FROM forms WHERE username = ?', (username,))
+            potrdilo_data = cursor.fetchone()
+            conn.close()
+
+            if potrdilo_data and potrdilo_data[0] is not None:
+                # Convert base64 encoding to binary data
+                potrdilo_binary = base64.b64decode(potrdilo_data[0])
+
+                # Set the appropriate response headers for downloading
+                response = Response(potrdilo_binary, content_type='application/pdf')
+                response.headers["Content-Disposition"] = f"attachment; filename={session['username']}_potrdilo.pdf"
+                return response
+
+        except Exception as e:
+            return f"Error downloading PDF: {str(e)}"
+    else:
+        return redirect(url_for('admin'))
+
 @app.route('/logout')
 def logout():
     session.clear()

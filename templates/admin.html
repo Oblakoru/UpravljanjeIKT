@@ -66,10 +66,18 @@
                         {% endif %}
                     </td>
                     <td class="py-2 px-4 border">
-                        <form method="post" action="{{ url_for('upload_pdf_admin', username=form[1]) }}"
+                        {#                        <form method="post" action="{{ url_for('upload_pdf_admin', username=form[1]) }}"#}
+                        {#                              enctype="multipart/form-data">#}
+                        {#                            <input class="bg-blue-500 text-white px-2 py-1 rounded w-48" type="file" name="new_pdf"#}
+                        {#                                   accept=".pdf">#}
+                        {#                            <button class="bg-blue-500 text-white px-2 py-1 rounded" type="submit">Naloži</button>#}
+                        {#                        </form>#}
+                        <form method="post" class="flex flex-col gap-3" action="{{ url_for('upload_pdf_admin', username=form[1]) }}"
                               enctype="multipart/form-data">
-                            <input class="bg-blue-500 text-white px-2 py-1 rounded" type="file" name="new_pdf"
-                                   accept=".pdf">
+                            <label for="file-input" class="bg-blue-500 text-white px-2 py-1 rounded cursor-pointer">
+                                Izberi datoteko
+                            </label>
+                            <input id="file-input" class="hidden" type="file" name="new_pdf" accept=".pdf">
                             <button class="bg-blue-500 text-white px-2 py-1 rounded" type="submit">Naloži</button>
                         </form>
                     </td>
@@ -91,4 +99,9 @@
     </div>
 </div>
 </body>
+<script>
+    document.querySelector('label[for="file-input"]').addEventListener('click', function () {
+        document.getElementById('file-input').click();
+    });
+</script>
 </html>

@@ -11,47 +11,56 @@
 
 <body class="bg-gray-100 p-8">
 
-    <h2 class="text-2xl font-bold mb-4">Dobrodošli, {{ username }}!</h2>
+<h2 class="text-2xl font-bold mb-4">Dobrodošli, {{ username }}!</h2>
 
-    <h3 class="text-xl font-bold mb-2">User Information Form</h3>
-    <form method="post" action="{{ url_for('user_info') }}" class="mb-8">
-        <!-- Add Tailwind CSS classes to style the form elements -->
-        <div class="mb-4">
-            <label for="name" class="block text-sm font-medium text-gray-600">Ime:</label>
-            <input type="text" id="name" name="name" required
-                class="mt-1 p-2 w-full border rounded-md">
-        </div>
+<h3 class="text-xl font-bold mb-2">Obrazec</h3>
+<form method="post" action="{{ url_for('user_info') }}" class="mb-8">
+    <!-- Add Tailwind CSS classes to style the form elements -->
+    <div class="mb-4">
+        <label for="name" class="block text-sm font-medium text-gray-600">Ime:</label>
+        <input type="text" id="name" name="name" required
+               class="mt-1 p-2 w-full border rounded-md">
+    </div>
 
-        <div class="mb-4">
-            <label for="surname" class="block text-sm font-medium text-gray-600">Priimek:</label>
-            <input type="text" id="surname" name="surname" required
-                class="mt-1 p-2 w-full border rounded-md">
-        </div>
+    <div class="mb-4">
+        <label for="surname" class="block text-sm font-medium text-gray-600">Priimek:</label>
+        <input type="text" id="surname" name="surname" required
+               class="mt-1 p-2 w-full border rounded-md">
+    </div>
 
-        <div class="mb-4">
-            <label for="street" class="block text-sm font-medium text-gray-600">Ulica:</label>
-            <input type="text" id="street" name="street" required
-                class="mt-1 p-2 w-full border rounded-md">
-        </div>
+    <div class="mb-4">
+        <label for="street" class="block text-sm font-medium text-gray-600">Ulica:</label>
+        <input type="text" id="street" name="street" required
+               class="mt-1 p-2 w-full border rounded-md">
+    </div>
 
-        <div class="mb-4">
-            <label for="country" class="block text-sm font-medium text-gray-600">Država:</label>
-            <input type="text" id="country" name="country" required
-                class="mt-1 p-2 w-full border rounded-md">
-        </div>
+    <div class="mb-4">
+        <label for="country" class="block text-sm font-medium text-gray-600">Država:</label>
+        <input type="text" id="country" name="country" required
+               class="mt-1 p-2 w-full border rounded-md">
+    </div>
 
-        <button type="submit"
-            class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring focus:border-blue-300">Pošlji</button>
-    </form>
+    <button type="submit"
+            class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring focus:border-blue-300">
+        Pošlji
+    </button>
+</form>
 
-    <a href="{{ url_for('logout') }}" class="text-blue-500 hover:underline">Odjava</a>
+<form method="get" action="{{ url_for('logout') }}">
+    <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700 focus:outline-none">
+        Odjava
+    </button>
+</form>
 
-    <h3 class="text-xl font-bold my-4">Preveri status obrazca</h3>
-    <form method="get" action="{{ url_for('check_status') }}">
-        <button type="submit"
-            class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-700 focus:outline-none focus:ring focus:border-green-300">Preveri
-            Status</button>
-    </form>
+
+<h3 class="text-xl font-bold my-4">Preveri status obrazca</h3>
+<form method="get" action="{{ url_for('check_status') }}">
+    <button type="submit"
+            class="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-700 focus:outline-none focus:ring focus:border-green-300">
+        Preveri
+        Status
+    </button>
+</form>
 </body>
 
 </html>

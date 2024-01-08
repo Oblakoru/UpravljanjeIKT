@@ -9,74 +9,86 @@
 </head>
 <body class="bg-gray-100 font-sans">
 
-    <div class="container mx-auto my-8 p-8 bg-white shadow-md">
-        <h2 class="text-2xl font-bold mb-4">Dobrodošli, {{ username }}!</h2>
+<div class="container mx-auto my-8 p-8 bg-white shadow-md">
+    <h2 class="text-2xl font-bold mb-4">Dobrodošli, {{ username }}!</h2>
 
-        <h3 class="text-xl font-semibold mb-4">Predloženi obrazci</h3>
+    <h3 class="text-xl font-semibold mb-4">Predloženi obrazci</h3>
 
-        {% if forms %}
-            <table class="w-full border-collapse border" border="1">
-                <thead>
-                    <tr>
-                        <th class="py-2 px-4 border">ID</th>
-                        <th class="py-2 px-4 border">Username</th>
-                        <th class="py-2 px-4 border">Ime</th>
-                        <th class="py-2 px-4 border">Priimek</th>
-                        <th class="py-2 px-4 border">Ulica</th>
-                        <th class="py-2 px-4 border">Država</th>
-                        <th class="py-2 px-4 border">Status</th>
-                        <th class="py-2 px-4 border">Actions</th>
-                        <th class="py-2 px-4 border">PDF</th>
-                        <th class="py-2 px-4 border">Naloži potrdilo</th> <!-- New column -->
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for form in forms %}
-                        <tr>
-                            <td class="py-2 px-4 border">{{ form[0] }}</td>
-                            <td class="py-2 px-4 border">{{ form[1] }}</td>
-                            <td class="py-2 px-4 border">{{ form[2] }}</td>
-                            <td class="py-2 px-4 border">{{ form[3] }}</td>
-                            <td class="py-2 px-4 border">{{ form[4] }}</td>
-                            <td class="py-2 px-4 border">{{ form[5] }}</td>
-                            <td class="py-2 px-4 border">{{ form[6] }}</td>
-                            <td class="py-2 px-4 border">
-                                <form method="post" action="{{ url_for('update_status', username=form[1], new_status='accepted') }}">
-                                    <button class="bg-green-500 text-white px-2 py-1 rounded" type="submit">Sprejmi</button>
+    {% if forms %}
+        <table class="w-full border-collapse border" border="1">
+            <thead>
+            <tr>
+                <th class="py-2 px-4 border">ID</th>
+                <th class="py-2 px-4 border">Username</th>
+                <th class="py-2 px-4 border">Ime</th>
+                <th class="py-2 px-4 border">Priimek</th>
+                <th class="py-2 px-4 border">Ulica</th>
+                <th class="py-2 px-4 border">Država</th>
+                <th class="py-2 px-4 border">Status</th>
+                <th class="py-2 px-4 border">Actions</th>
+                <th class="py-2 px-4 border">PDF</th>
+                <th class="py-2 px-4 border">Naloži potrdilo</th> <!-- New column -->
+            </tr>
+            </thead>
+            <tbody>
+            {% for form in forms %}
+                <tr>
+                    <td class="py-2 px-4 border">{{ form[0] }}</td>
+                    <td class="py-2 px-4 border">{{ form[1] }}</td>
+                    <td class="py-2 px-4 border">{{ form[2] }}</td>
+                    <td class="py-2 px-4 border">{{ form[3] }}</td>
+                    <td class="py-2 px-4 border">{{ form[4] }}</td>
+                    <td class="py-2 px-4 border">{{ form[5] }}</td>
+                    <td class="py-2 px-4 border">{{ form[6] }}</td>
+                    <td class="py-2 px-4 border">
+                        <form method="post"
+                              action="{{ url_for('update_status', username=form[1], new_status='accepted') }}">
+                            <button class="bg-green-500 text-white mb-3 px-2 py-1 rounded" type="submit">Sprejmi
+                            </button>
+                        </form>
+                        <form method="post"
+                              action="{{ url_for('update_status', username=form[1], new_status='rejected') }}">
+                            <button class="bg-red-500 text-white px-2 py-1 rounded" type="submit">Zavrni</button>
+                        </form>
+                    </td>
+                    <td class="py-2 px-4 border">
+                        {% if form[6] == 'accepted' %}
+                            {% if form[7] %}
+                                <form method="get" action="{{ url_for('view_pdf', username=form[1]) }}" target="_blank">
+                                    <button class="bg-blue-500 text-white px-2 py-1 rounded" type="submit">Preglej PDF
+                                    </button>
                                 </form>
-                                <form method="post" action="{{ url_for('update_status', username=form[1], new_status='rejected') }}">
-                                    <button class="bg-red-500 text-white px-2 py-1 rounded" type="submit">Zavrni</button>
-                                </form>
-                            </td>
-                            <td class="py-2 px-4 border">
-                                {% if form[6] == 'accepted' %}
-                                    {% if form[7] %}
-                                        <form method="get" action="{{ url_for('view_pdf', username=form[1]) }}" target="_blank">
-                                            <button class="bg-blue-500 text-white px-2 py-1 rounded" type="submit">Preglej PDF</button>
-                                        </form>
-                                    {% else %}
-                                        <span class="text-gray-500">PDF ni na voljo</span>
-                                    {% endif %}
-                                {% else %}
-                                    <span class="text-gray-500">PDF je na voljo</span>
-                                {% endif %}
-                            </td>
-                            <td class="py-2 px-4 border">
-                                <form method="post" action="{{ url_for('upload_pdf_admin', username=form[1]) }}" enctype="multipart/form-data">
-                                    <input class="bg-blue-500 text-white px-2 py-1 rounded" type="file" name="new_pdf" accept=".pdf">
-                                    <button class="bg-blue-500 text-white px-2 py-1 rounded" type="submit">Naloži</button>
-                                </form>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% else %}
-            <p>Obrazcev ni na voljo.</p>
-        {% endif %}
-        <div class="mt-4">
-            <a class="text-blue-500" href="{{ url_for('logout') }}">Odjava</a>
-        </div>
+                            {% else %}
+                                <span class="text-gray-500">PDF ni na voljo</span>
+                            {% endif %}
+                        {% else %}
+                            <span class="text-gray-500">PDF je na voljo</span>
+                        {% endif %}
+                    </td>
+                    <td class="py-2 px-4 border">
+                        <form method="post" action="{{ url_for('upload_pdf_admin', username=form[1]) }}"
+                              enctype="multipart/form-data">
+                            <input class="bg-blue-500 text-white px-2 py-1 rounded" type="file" name="new_pdf"
+                                   accept=".pdf">
+                            <button class="bg-blue-500 text-white px-2 py-1 rounded" type="submit">Naloži</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <h3 class="text-center text-gray-600 mt-8 text-lg font-semibold">Obrazcev ni na voljo.</h3>
+    {% endif %}
+    <div class="mt-4">
+        <form method="get" action="{{ url_for('logout') }}">
+            <button type="submit"
+                    class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700 focus:outline-none">
+                Odjava
+            </button>
+        </form>
+
     </div>
+</div>
 </body>
 </html>

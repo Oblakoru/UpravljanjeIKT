@@ -12,11 +12,21 @@
 <body class="bg-gray-100 p-8">
 
 <h2 class="text-2xl font-bold mb-4">Dobrodošli, {{ username }}!</h2>
-<p class="mb-4">Status vloge: {{ status }}</p>
+{% if status == 'accepted' %}
+    <p class="mb-4">Status vloge: <span class="text-green-500 uppercase font-bold">{{ status }}</span></p>
+{% elif status == 'rejected' %}
+        <p class="mb-4">Status vloge: <span class="text-red-500 uppercase font-bold">{{ status }}</span></p>
+{% endif %}
 
 
 {% if potrdilo %}
-    <a href="{{ url_for('download_potrdilo') }}" class="text-blue-500 hover:underline">Prenesite digitalno potrdilo</a>
+    <form method="get" action="{{ url_for('download_potrdilo') }}">
+        <button type="submit"
+                class="bg-blue-500 text-white mb-3 px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring focus:border-blue-300">
+            Prenesite digitalno potrdilo
+        </button>
+    </form>
+
 {% else %}
     {% if status == 'accepted' %}
         <h3 class="text-xl font-bold mb-2">Naložite osebni dokument</h3>
@@ -26,7 +36,7 @@
                    class="mt-1 p-2 w-full border rounded-md">
 
             <button type="submit"
-                    class="mt-4 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring focus:border-blue-300">
+                    class="mt-4 bg-blue-500 mb-3 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring focus:border-blue-300">
                 Naloži
             </button>
         </form>
@@ -38,7 +48,12 @@
 {% endif %}
 
 
-<a href="{{ url_for('logout') }}" class="text-blue-500 hover:underline">Odjava</a>
+<form method="get" action="{{ url_for('logout') }}">
+    <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-700 focus:outline-none">
+        Odjava
+    </button>
+</form>
+
 </body>
 
 </html>

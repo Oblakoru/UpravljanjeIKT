@@ -50,12 +50,10 @@ def insert_static_accounts():
     cursor = conn.cursor()
 
     for account in static_accounts:
-        # Check if the user already exists
         cursor.execute('SELECT id FROM users WHERE username = ?', (account['username'],))
         existing_user = cursor.fetchone()
 
         if not existing_user:
-            # Insert the user if it doesn't exist
             cursor.execute('INSERT INTO users (username, password, role) VALUES (?, ?, ?)', (account['username'], account['password'], account['role']))
             conn.commit()
 
@@ -114,14 +112,12 @@ def check_status():
         else:
             return render_template('error_template.html',
                                    error_message="Vaša vloga je še v obdelavi, prosim počakajte!")
-            # return "Form status is still pending. Check again later."
     else:
         return redirect(url_for('login'))
 
 @app.route('/user_info', methods=['POST'])
 def user_info():
     if 'username' in session and session['role'] == 'user':
-        # Check if the user already has a pending form
         conn = sqlite3.connect(DATABASE)
         cursor = conn.cursor()
         cursor.execute('SELECT status FROM forms WHERE username = ? AND status = "pending"', (session['username'],))
@@ -130,7 +126,6 @@ def user_info():
 
         if existing_pending_form:
             return render_template('error_template.html', error_message="Vaša vloga še ni obdelana, prosim počakajte!")
-            # return "You already have a pending form. Please wait for it to be processed."
         else:
             if request.method == 'POST':
                 name = request.form['name']
@@ -138,7 +133,6 @@ def user_info():
                 street = request.form['street']
                 country = request.form['country']
 
-                # Save the form data to the database
                 conn = sqlite3.connect(DATABASE)
                 cursor = conn.cursor()
                 cursor.execute('''
@@ -182,10 +176,8 @@ def view_pdf(username):
     conn.close()
 
     if pdf_data:
-        # Convert base64 encoding to binary data
         pdf_binary = base64.b64decode(pdf_data[0])
 
-        # Set the appropriate response headers for downloading
         response = Response(pdf_binary, content_type='application/pdf')
         response.headers["Content-Disposition"] = f"attachment; filename={username}_form.pdf"
         return response
@@ -211,14 +203,13 @@ def update_status(username, new_status):
         conn = sqlite3.connect(DATABASE)
         cursor = conn.cursor()
 
-        # Update the status based on the username
         cursor.execute('UPDATE forms SET status = ? WHERE username = ?', (new_status, username))
         conn.commit()
         conn.close()
 
         return redirect(url_for('admin'))
     else:
-        return redirect(url_for('login'))# Forbidden, as the user is not an admin
+        return redirect(url_for('login'))
 
 
 @app.route('/upload_pdf', methods=['POST'])
@@ -228,17 +219,14 @@ def upload_pdf():
             new_pdf = request.files['new_pdf']
             new_pdf_data = new_pdf.read()
 
-            # Convert binary data to base64 encoding
             new_pdf_base64 = base64.b64encode(new_pdf_data).decode('utf-8')
 
-            # Update the existing form's PDF in the database
             conn = sqlite3.connect(DATABASE)
             cursor = conn.cursor()
             cursor.execute('UPDATE forms SET pdf = ? WHERE username = ?', (new_pdf_base64, session['username']))
             conn.commit()
             conn.close()
 
-            # Redirect to 'user' page after finishing
             return redirect(url_for('user'))
         except Exception as e:
             return f"Error handling PDF: {str(e)}"
@@ -250,7 +238,6 @@ def upload_pdf():
 def download_potrdilo():
     if 'username' in session and session['role'] == 'user':
         try:
-            # Get the user's form data from the database
             conn = sqlite3.connect(DATABASE)
             cursor = conn.cursor()
             cursor.execute('SELECT potrdilo FROM forms WHERE username = ?', (session['username'],))
@@ -258,10 +245,8 @@ def download_potrdilo():
             conn.close()
 
             if potrdilo_data and potrdilo_data[0] is not None:
-                # Convert base64 encoding to binary data
                 potrdilo_binary = base64.b64decode(potrdilo_data[0])
 
-                # Set the appropriate response headers for downloading
                 response = Response(potrdilo_binary, content_type='application/pdf')
                 response.headers["Content-Disposition"] = f"attachment; filename={session['username']}_potrdilo.pdf"
                 return response
@@ -279,10 +264,8 @@ def upload_pdf_admin(username):
             new_pdf = request.files['new_pdf']
             new_pdf_data = new_pdf.read()
 
-            # Convert binary data to base64 encoding
             new_pdf_base64 = base64.b64encode(new_pdf_data).decode('utf-8')
 
-            # Update the existing form's PDF in the database
             conn = sqlite3.connect(DATABASE)
             cursor = conn.cursor()
             cursor.execute('UPDATE forms SET potrdilo = ? WHERE username = ?', (new_pdf_base64, username))
@@ -300,8 +283,6 @@ def upload_pdf_admin(username):
 def download_pdf_admin(username):
     if 'username' in session and session['role'] == 'admin':
         try:
-
-            # Get the user's form data from the database
             conn = sqlite3.connect(DATABASE)
             cursor = conn.cursor()
             cursor.execute('SELECT potrdilo FROM forms WHERE username = ?', (username,))
@@ -309,10 +290,8 @@ def download_pdf_admin(username):
             conn.close()
 
             if potrdilo_data and potrdilo_data[0] is not None:
-                # Convert base64 encoding to binary data
                 potrdilo_binary = base64.b64decode(potrdilo_data[0])
 
-                # Set the appropriate response headers for downloading
                 response = Response(potrdilo_binary, content_type='application/pdf')
                 response.headers["Content-Disposition"] = f"attachment; filename={session['username']}_potrdilo.pdf"
                 return response
@@ -321,6 +300,14 @@ def download_pdf_admin(username):
             return f"Error downloading PDF: {str(e)}"
     else:
         return redirect(url_for('admin'))
+
+@app.route('/izjava_piskotki')
+def izjava_piskotki():
+    return render_template('izjava_piskotki.html')
+
+@app.route('/izjava_zasebnosti')
+def izjava_zasebnosti():
+    return render_template('izjava_zasebnosti.html')
 
 @app.route('/logout')
 def logout():

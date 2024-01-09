@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Page</title>
-    <!-- Include Tailwind CSS via CDN -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
 
@@ -15,7 +14,6 @@
 
 <h3 class="text-xl font-bold mb-2">Obrazec</h3>
 <form method="post" action="{{ url_for('user_info') }}" class="mb-8">
-    <!-- Add Tailwind CSS classes to style the form elements -->
     <div class="mb-4">
         <label for="name" class="block text-sm font-medium text-gray-600">Ime:</label>
         <input type="text" id="name" name="name" required
@@ -61,6 +59,25 @@
         Status
     </button>
 </form>
+
+<div class="container mx-auto p-4">
+    <footer class="mt-8 border-t pt-4">
+        <div class="flex justify-center">
+            <form method="get" action="{{ url_for('izjava_piskotki') }}">
+                <button type="submit"
+                        class="bg-blue-500 text-white mb-3 mr-4 px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring focus:border-blue-300">
+                    Izjava o piškotkih
+                </button>
+            </form>
+            <form method="get" action="{{ url_for('izjava_zasebnosti') }}">
+                <button type="submit"
+                        class="bg-blue-500 text-white mb-3 px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring focus:border-blue-300">
+                    Izjava o zasebnosti
+                </button>
+            </form>
+        </div>
+    </footer>
+</div>
 </body>
 
 </html>
